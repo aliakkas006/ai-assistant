@@ -1,11 +1,11 @@
 {
-  "id": "166bfb76-4498-4792-a04c-4c76959b9de0",
+  "id": "55af445a-f068-4fd1-ba59-5283cd88f134",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
   "tables": {
-    "invoice_items": {
-      "name": "invoice_items",
+    "professionals": {
+      "name": "professionals",
       "schema": "",
       "columns": {
         "id": {
@@ -14,9 +14,21 @@
           "primaryKey": true,
           "notNull": true
         },
-        "invoice_id": {
-          "name": "invoice_id",
-          "type": "integer",
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "org_or_prac_id": {
+          "name": "org_or_prac_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "username_or_business_url": {
+          "name": "username_or_business_url",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
@@ -26,153 +38,67 @@
           "primaryKey": false,
           "notNull": true
         },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "quantity": {
-          "name": "quantity",
+        "ranking": {
+          "name": "ranking",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false,
+          "default": 0
         },
-        "amount": {
-          "name": "amount",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "total": {
-          "name": "total",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "invoice_items_invoice_id_invoices_id_fk": {
-          "name": "invoice_items_invoice_id_invoices_id_fk",
-          "tableFrom": "invoice_items",
-          "tableTo": "invoices",
-          "columnsFrom": [
-            "invoice_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "invoices": {
-      "name": "invoices",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "invoice_number": {
-          "name": "invoice_number",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "invoice_date": {
-          "name": "invoice_date",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "payment_date": {
-          "name": "payment_date",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "bill_to": {
-          "name": "bill_to",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "ship_to": {
-          "name": "ship_to",
-          "type": "jsonb",
+        "photo_url": {
+          "name": "photo_url",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
-        "company": {
-          "name": "company",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "sub_total": {
-          "name": "sub_total",
-          "type": "numeric(10, 2)",
+        "category": {
+          "name": "category",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
-        "tax_rate": {
-          "name": "tax_rate",
-          "type": "numeric(5, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "tax_amount": {
-          "name": "tax_amount",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "grand_total": {
-          "name": "grand_total",
-          "type": "numeric(10, 2)",
+        "sub_category": {
+          "name": "sub_category",
+          "type": "text[]",
           "primaryKey": false,
           "notNull": true
         },
-        "notes": {
-          "name": "notes",
+        "rating": {
+          "name": "rating",
+          "type": "numeric(2, 1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_appointments": {
+          "name": "total_appointments",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "zone": {
+          "name": "zone",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "branch": {
+          "name": "branch",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "area_of_practice": {
+          "name": "area_of_practice",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
+          "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "invoices_invoice_number_unique": {
-          "name": "invoices_invoice_number_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "invoice_number"
-          ]
-        }
-      }
+      "uniqueConstraints": {}
     }
   },
   "enums": {},

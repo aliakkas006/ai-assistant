@@ -20,7 +20,7 @@ export class NLPService {
   }
 
   /**
-   * Extracts keywords (category and location) from a user query using OpenAI.
+   * Extracts keywords (category and location) from a user query using OpenAI API.
    * @param query - The user's query (e.g., "Find me the best doc in Uttara Dhaka").
    * @returns An object containing the normalized category and location.
    */
@@ -51,8 +51,6 @@ export class NLPService {
         location: string;
       };
       const { category, location } = parsedResponse;
-
-      // const { category, location } = JSON.parse(response);
 
       // Normalize the category using WordNet
       const normalizedCategory = await this.getSynonym(category);

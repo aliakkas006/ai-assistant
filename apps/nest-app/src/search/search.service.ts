@@ -8,11 +8,20 @@ import { NLPService } from 'src/utils/nlp.utils';
 export class SearchService {
   constructor(private readonly nlpService: NLPService) {}
 
+  /**
+   * Finds the best professionals based on the user's query.
+   * This method performs the following steps:
+   * 1. Extracts and normalizes keywords (e.g., profession and location) from the query using NLP.
+   * 2. Queries the database to find professionals matching the extracted criteria.
+   * 3. Returns the top 5 professionals sorted by ranking, rating, and total appointments.
+   *
+   * @param query - The user's search query (e.g., "Find me the best doctor in Uttara Dhaka").
+   * @returns A list of professionals matching the query criteria.
+   */
   async findBestProfessional(query: string) {
-    // Extract Keywords & Normalize Using AI & NLP
     const { category, location } = await this.nlpService.extractKeywords(query);
 
-    // Fetch Matching Professionals from Database
+    // Fetch matching professionals from the database
     const results = await db
       .select()
       .from(professionals)
@@ -30,7 +39,6 @@ export class SearchService {
       .limit(5);
 
     console.log(`Found ${results.length} professionals for query: ${query}`);
-    console.log(results);
 
     return results;
   }

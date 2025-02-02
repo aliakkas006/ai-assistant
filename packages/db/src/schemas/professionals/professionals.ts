@@ -16,9 +16,6 @@ export const professionals = pgTable("professionals", {
     zone: text("zone").array().notNull(),
     branch: text("branch").array().notNull(),
     areaOfPractice: text("area_of_practice").notNull(),
-
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
   });
 
   export type Professional = typeof professionals.$inferSelect;

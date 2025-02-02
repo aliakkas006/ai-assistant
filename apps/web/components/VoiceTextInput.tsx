@@ -3,12 +3,27 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
+import axios, { AxiosError } from "axios";
 
-interface Professional {
-  _id: string;
+type Professional = {
+  id: string;
+  type: string;
+  orgOrPracId: string;
+  usernameOrBusinessUrl: string;
   name: string;
+  ranking: number;
+  photo: string;
   category: string;
+  subCategory: string[];
   rating: number;
+  totalAppointments: number;
+  zone: string[];
+  branch: string[];
+  areaOfPractice: string;
+};
+
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
 }
 
 export default function VoiceTextInput() {
@@ -16,12 +31,13 @@ export default function VoiceTextInput() {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [results, setResults] = useState<Professional[]>([]);
 
+  /**
+   * Starts voice recording and sets the query based on the transcribed text.
+   */
   const startRecording = () => {
     setIsRecording(true);
 
-    // Fix for TypeScript SpeechRecognition error
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
       alert("Speech recognition is not supported in this browser.");
@@ -32,35 +48,51 @@ export default function VoiceTextInput() {
     const recognition = new SpeechRecognition();
     recognition.lang = "en-US";
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       setQuery(transcript);
       setIsRecording(false);
-    };
+    }
+
+    // recognition.onresult = <T>(event) => {
+    //   const transcript = event.results[0][0].transcript;
+    //   setQuery(transcript);
+    //   setIsRecording(false);
+    // };
 
     recognition.start();
   };
 
+  /**
+   * Handles changes in the text input field.
+   * @param e - The change event from the input field.
+   */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
 
+  /**
+   * Searches for professionals based on the query.
+   */
   const searchProfessionals = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
+      const res = await axios.post<Professional[]>("http://localhost:3000/search", {
+        query: "Find me the best doctor in Uttara Dhaka",
       });
-      const data: Professional[] = await res.json();
-      setResults(data);
+
+      setResults(res.data);
     } catch (error) {
-      console.error("Error fetching professionals:", error);
+      if (error instanceof AxiosError) {
+        console.error("Axios error fetching professionals:", error.message);
+      } else {
+        console.error("Unexpected error fetching professionals:", error);
+      }
     }
   };
 
   return (
     <div className="w-full max-w-md mx-auto">
+      {/* Voice and Text Input */}
       <div className="flex items-center border border-gray-300 rounded-full p-2 shadow-sm bg-gray-100">
         <button
           onClick={startRecording}
@@ -84,11 +116,11 @@ export default function VoiceTextInput() {
       </div>
 
       {/* Display Results */}
-      {/* <div className="mt-4">
+      <div className="mt-4">
         {results.length > 0 ? (
           <ul className="bg-white shadow-md rounded-md p-4">
             {results.map((prof) => (
-              <li key={prof._id} className="border-b p-2 last:border-none">
+              <li key={prof.id} className="border-b p-2 last:border-none">
                 <strong>{prof.name}</strong> ({prof.category}) - ⭐{prof.rating}
               </li>
             ))}
@@ -96,7 +128,8 @@ export default function VoiceTextInput() {
         ) : (
           <p className="text-gray-500 text-center">No results found.</p>
         )}
-      </div> */}
+      </div>
     </div>
   );
 }
+

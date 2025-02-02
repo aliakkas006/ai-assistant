@@ -1,13 +1,13 @@
-import { db } from '@repo/db';
-import { professionals } from '@repo/db/src/schemas/professionals';
+import { db, Professional } from '@repo/db';
+import { professionals } from '@repo/db';
 import { eq } from 'drizzle-orm';
 
 async function seed() {
   console.log('🌱 Seeding database...');
 
-  const sampleProfessionals: any = [
+  const sampleProfessionals: Professional[] = [
     {
-      id: '1',
+      id: 1,
       type: 'Organization',
       orgOrPracId: '1234567',
       usernameOrBusinessUrl: 'user1',
@@ -16,23 +16,23 @@ async function seed() {
       photo: 'https://example.com/photo1.jpg',
       category: 'Healthcare',
       subCategory: ['Medicine', 'Eye'],
-      rating: 4.7,
+      rating: '4.7',
       totalAppointments: 1000,
       zone: ['Cal', 'Nev', 'NY'],
       branch: ['branch 1', 'branch 2'],
       areaOfPractice: 'local',
     },
     {
-      id: '2',
+      id: 2,
       type: 'Practitioner',
       orgOrPracId: '9876543',
       usernameOrBusinessUrl: 'doc_mike',
-      name: 'Dr. Mike Johnson',
+      name: 'Doctor 1',
       ranking: 9,
       photo: 'https://example.com/photo2.jpg',
       category: 'Doctor',
       subCategory: ['Cardiology'],
-      rating: 4.9,
+      rating: '4.9',
       totalAppointments: 500,
       zone: ['Dhaka', 'Uttara'],
       branch: ['Uttara Branch'],
@@ -40,23 +40,24 @@ async function seed() {
     },
   ];
 
-  for (const prof of sampleProfessionals) {
+  for (const professional of sampleProfessionals) {
     try {
       // Check if the professional already exists
       const exists = await db
         .select()
         .from(professionals)
-        .where(eq(professionals.id, prof.id)); // Remove .execute()
+        .where(eq(professionals.id, professional.id));
+
+      console.log('exists', exists);
 
       if (exists.length === 0) {
-        // Insert the professional if it doesn't exist
-        await db.insert(professionals).values(prof); // Remove .execute()
-        console.log(`✅ Inserted: ${prof.name}`);
+        await db.insert(professionals).values(professional);
+        console.log(`✅ Inserted: ${professional.name}`);
       } else {
-        console.log(`⚠️ Skipped (Already Exists): ${prof.name}`);
+        console.log(`⚠️ Skipped (Already Exists): ${professional.name}`);
       }
     } catch (error) {
-      console.error(`❌ Error inserting ${prof.name}:`, error);
+      console.error(`❌ Error inserting ${professional.name}:`, error);
     }
   }
 
