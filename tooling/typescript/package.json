@@ -1,0 +1,8 @@
+{
+    "name": "@repo/typescript-config",
+    "private": true,
+    "version": "0.0.1",
+    "description": "Shared Typescript configuration for all Ambel monorepo packages",
+    "author": "Ali Akkas",
+    "license": "MIT"
+}
